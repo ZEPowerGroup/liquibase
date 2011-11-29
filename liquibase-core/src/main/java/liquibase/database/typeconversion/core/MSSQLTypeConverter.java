@@ -86,13 +86,8 @@ public class MSSQLTypeConverter extends AbstractTypeConverter {
     }
 
     @Override
-    public DateType getDateType() {
-        return new DateType("SMALLDATETIME");
-    }
-
-    @Override
-    public TimeType getTimeType() {
-        return new TimeType("DATETIME");
+    public DateTimeType getDateTimeType() {
+      return new DateTimeType("DATETIME2");
     }
 
     @Override

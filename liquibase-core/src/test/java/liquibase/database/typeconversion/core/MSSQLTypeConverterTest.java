@@ -37,13 +37,13 @@ public class MSSQLTypeConverterTest extends DefaultTypeConverterTest{
     
     @Test
     public void getDateType() {
-        assertEquals("SMALLDATETIME", new MSSQLTypeConverter().getDateType().toString());
+        assertEquals("DATE", new MSSQLTypeConverter().getDateType().toString());
     }
 
     
     @Test
     public void getDateTimeType() {
-        assertEquals("DATETIME", new MSSQLTypeConverter().getDateTimeType().toString());
+        assertEquals("DATETIME2", new MSSQLTypeConverter().getDateTimeType().toString());
     }
 
     
