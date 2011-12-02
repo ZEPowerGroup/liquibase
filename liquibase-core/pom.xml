@@ -220,4 +220,10 @@
         </profile>
     </profiles>
 
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ze.nexus.external.snapshot</id>
+      <url>http://zema-util-02/nexus/content/repositories/ze.nexus.external.snapshot</url>
+    </snapshotRepository>
+  </distributionManagement>
 </project>
