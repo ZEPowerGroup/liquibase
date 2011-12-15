@@ -4,7 +4,7 @@
 
     <groupId>org.liquibase</groupId>
     <artifactId>liquibase-parent</artifactId>
-    <version>2.0.4-SNAPSHOT</version>
+    <version>2.0.4.ZE-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Liquibase Parent Configuration</name>
@@ -56,11 +56,6 @@
 
     <modules>
         <module>liquibase-core</module>
-        <module>liquibase-maven-plugin</module>
-        <module>samples/liquibase-ext-change</module>
-        <module>samples/liquibase-ext-changewithnestedtags</module>
-        <module>samples/liquibase-ext-sqlgenerator</module>
-        <module>liquibase-integration-tests</module>
     </modules>
 
     <dependencyManagement>
@@ -257,19 +252,10 @@
     </reporting>
 
     <distributionManagement>
-        <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>sonatype-nexus-staging</id>
-            <name>Sonatype Production Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-
-        </repository>
-        <snapshotRepository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sontatype Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
+      <snapshotRepository>
+        <id>ze.nexus.external.snapshot</id>
+        <url>http://zema-util-02/nexus/content/repositories/ze.nexus.external.snapshot</url>
+      </snapshotRepository>
     </distributionManagement>
 
     <profiles>
