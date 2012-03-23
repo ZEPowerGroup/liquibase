@@ -120,7 +120,8 @@ public class LoadDataChange extends AbstractChange implements ChangeWithColumns<
                 for (int i=0; i<headers.length; i++) {
                     String columnName = null;
                     if( i >= line.length ) {
-                      throw new UnexpectedLiquibaseException("CSV Line " + lineNumber + " has only " + (i-1) + " columns, the header has " + headers.length);
+                        throw new UnexpectedLiquibaseException("CSV Line " + lineNumber + " has only " + i +
+                                " columns, the header has " + headers.length);
                     }
 
                     Object value = line[i];
