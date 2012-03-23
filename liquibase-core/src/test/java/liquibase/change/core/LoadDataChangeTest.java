@@ -2,6 +2,7 @@ package liquibase.change.core;
 
 import liquibase.change.AbstractChangeTest;
 import liquibase.database.core.MockDatabase;
+import liquibase.exception.UnexpectedLiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import liquibase.statement.SqlStatement;
 import liquibase.statement.core.InsertStatement;
@@ -21,7 +22,7 @@ public class LoadDataChangeTest extends AbstractChangeTest {
     }
 
 
-    @Test
+    @Test(expected = UnexpectedLiquibaseException.class)
     public void loadDataEmpty() throws Exception {
         LoadDataChange refactoring = new LoadDataChange();
         refactoring.setSchemaName("SCHEMA_NAME");
@@ -32,8 +33,6 @@ public class LoadDataChangeTest extends AbstractChangeTest {
         refactoring.setResourceAccessor(new ClassLoaderResourceAccessor());
 
         SqlStatement[] sqlStatements = refactoring.generateStatements(new MockDatabase());
-
-        assertEquals(0, sqlStatements.length);
     }
 
     @Test
