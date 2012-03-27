@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 
 public class ChangeLogParameters {
 
+    private List<ChangeLogParameterGenerator> changeLogParameterGenerators =
+            new ArrayList<ChangeLogParameterGenerator>();
     private List<ChangeLogParameter> changeLogParameters = new ArrayList<ChangeLogParameter>();
     private ExpressionExpander expressionExpander;
     private Database currentDatabase;
@@ -41,6 +43,13 @@ public class ChangeLogParameters {
         }
     }
 
+    public void setChangeLogParameterGenerators(Collection<? extends ChangeLogParameterGenerator> generators) {
+        this.changeLogParameterGenerators = new ArrayList<ChangeLogParameterGenerator>();
+        if (generators != null) {
+            this.changeLogParameterGenerators.addAll(generators);
+        }
+    }
+
     public void set(String paramter, Object value) {
         changeLogParameters.add(new ChangeLogParameter(paramter, value));
     }
@@ -66,6 +75,12 @@ public class ChangeLogParameters {
             if (param.getKey().equalsIgnoreCase(key) && param.isValid()) {
                 return param;
             }
+        }
+        for (ChangeLogParameterGenerator generator : changeLogParameterGenerators) {
+            Object value = generator.generateValue(key, currentDatabase, currentContexts);
+            ChangeLogParameter param = new ChangeLogParameter(key, value);
+            changeLogParameters.add(param);
+            return param;
         }
         return null;
     }
