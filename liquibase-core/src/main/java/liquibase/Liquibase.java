@@ -10,6 +10,7 @@ import liquibase.diff.Diff;
 import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.exception.LockException;
+import liquibase.executor.ComboExecutor;
 import liquibase.executor.Executor;
 import liquibase.executor.ExecutorService;
 import liquibase.executor.LoggingExecutor;
@@ -128,11 +129,22 @@ public class Liquibase {
     }
 
     public void update(String contexts, Writer output) throws LiquibaseException {
+        update(contexts, output, false);
+    }
+
+    public void update(String contexts, Writer output, boolean applyAndLog) throws LiquibaseException {
         changeLogParameters.setContexts(StringUtils.splitAndTrim(contexts, ","));
 
         Executor oldTemplate = ExecutorService.getInstance().getExecutor(database);
         LoggingExecutor loggingExecutor = new LoggingExecutor(ExecutorService.getInstance().getExecutor(database), output, database);
-        ExecutorService.getInstance().setExecutor(database, loggingExecutor);
+        final Executor executor;
+        if (applyAndLog) {
+            executor = new ComboExecutor(oldTemplate, loggingExecutor);
+        }
+        else {
+            executor = loggingExecutor;
+        }
+        ExecutorService.getInstance().setExecutor(database, executor);
 
         outputHeader("Update Database Script");
 
