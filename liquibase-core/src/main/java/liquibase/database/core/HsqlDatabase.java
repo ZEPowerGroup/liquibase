@@ -7,6 +7,8 @@ import liquibase.exception.DateParseException;
 import liquibase.util.ISODateFormat;
 
 import java.math.BigInteger;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -94,14 +96,27 @@ public class HsqlDatabase extends AbstractDatabase {
         String returnString = isoDate;
         try {
             if (isDateTime(isoDate)) {
-                ISODateFormat isoTimestampFormat = new ISODateFormat();
-                DateFormat dbTimestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-                returnString = dbTimestampFormat.format(isoTimestampFormat.parse(isoDate));
+                returnString = getDateTimeLiteral(new java.sql.Timestamp(new ISODateFormat().parse(isoDate).getTime()));
             }
         } catch (ParseException e) {
             throw new RuntimeException("Unexpected date format: " + isoDate, e);
         }
-        return "'" + returnString + "'";
+        return returnString;
+    }
+
+    @Override
+    public String getDateLiteral(java.sql.Date date) {
+        return "DATE '" + new SimpleDateFormat("yyyy-MM-dd").format(date) + "'";
+    }
+
+    @Override
+    public String getDateTimeLiteral(Timestamp date) {
+        return "TIMESTAMP '" + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S").format(date) + "'";
+    }
+
+    @Override
+    public String getTimeLiteral(Time date) {
+        return "TIME '" + new SimpleDateFormat("HH:mm:ss.S").format(date) + "'";
     }
 
     @Override
