@@ -78,9 +78,11 @@ public class ChangeLogParameters {
         }
         for (ChangeLogParameterGenerator generator : changeLogParameterGenerators) {
             Object value = generator.generateValue(key, currentDatabase, currentContexts);
-            ChangeLogParameter param = new ChangeLogParameter(key, value);
-            changeLogParameters.add(param);
-            return param;
+            if (null != value) {
+                ChangeLogParameter param = new ChangeLogParameter(key, value);
+                changeLogParameters.add(param);
+                return param;
+            }
         }
         return null;
     }
