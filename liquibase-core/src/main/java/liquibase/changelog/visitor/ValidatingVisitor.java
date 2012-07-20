@@ -32,6 +32,8 @@ public class ValidatingVisitor implements ChangeSetVisitor {
 
     private Set<String> seenChangeSets = new HashSet<String>();
 
+    private Set<String> seenChangeSetsWithMd5 = new HashSet<String>();
+
     private List<RanChangeSet> ranChangeSets;
     private Database database;
 
@@ -106,9 +108,12 @@ public class ValidatingVisitor implements ChangeSetVisitor {
 
         String changeSetString = changeSet.toString(false);
         if (seenChangeSets.contains(changeSetString)) {
-            duplicateChangeSets.add(changeSet);
+            if (!seenChangeSetsWithMd5.contains(changeSet.toString(true))) {
+                duplicateChangeSets.add(changeSet);
+            }
         } else {
             seenChangeSets.add(changeSetString);
+            seenChangeSetsWithMd5.add(changeSet.toString(true));
         }
     }
 

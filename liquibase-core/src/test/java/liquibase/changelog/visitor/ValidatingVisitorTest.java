@@ -2,6 +2,7 @@ package liquibase.changelog.visitor;
 
 import liquibase.change.ColumnConfig;
 import liquibase.change.core.CreateTableChange;
+import liquibase.change.core.CreateViewChange;
 import liquibase.changelog.ChangeSet;
 import liquibase.changelog.RanChangeSet;
 import liquibase.changelog.DatabaseChangeLog;
@@ -17,10 +18,18 @@ public class ValidatingVisitorTest {
     private ChangeSet changeSet1;
     private ChangeSet changeSet2;
 
+    private ChangeSet changeSet1a;
+
     @Before
     public void setup() {
         changeSet1 = new ChangeSet("1", "testAuthor", false, false, "path/changelog", null, null);
         changeSet2 = new ChangeSet("2", "testAuthor", false, false, "path/changelog", null, null);
+        changeSet1a = new ChangeSet("1", "testAuthor", false, false, "path/changelog", null, null);
+        CreateViewChange change = new CreateViewChange();
+        change.setSchemaName("testSchema");
+        change.setViewName("testView");
+        change.setSelectQuery("select 1 from dual");
+        changeSet1a.addChange(change);
     }
 
 
@@ -70,11 +79,22 @@ public class ValidatingVisitorTest {
     }
 
     @Test
-    public void visit_duplicate() {
+    public void visit_duplicateIdentical() {
 
         ValidatingVisitor handler = new ValidatingVisitor(new ArrayList<RanChangeSet>());
         handler.visit(changeSet1, new DatabaseChangeLog(), null);
         handler.visit(changeSet1, new DatabaseChangeLog(), null);
+
+        assertEquals(0, handler.getDuplicateChangeSets().size());
+
+        assertTrue(handler.validationPassed());
+    }
+
+    @Test
+    public void visit_duplicateDifferent() {
+        ValidatingVisitor handler = new ValidatingVisitor(new ArrayList<RanChangeSet>());
+        handler.visit(changeSet1, new DatabaseChangeLog(), null);
+        handler.visit(changeSet1a, new DatabaseChangeLog(), null);
 
         assertEquals(1, handler.getDuplicateChangeSets().size());
 
