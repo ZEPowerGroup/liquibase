@@ -27,6 +27,8 @@ public class StringChangeLogSerializer implements ChangeLogSerializer {
 
     private static final int INDENT_LENGTH = 4;
 
+    private static final Pattern NUMERIC_VALUE_PATTERN = Pattern.compile("(\\d*\\.\\d*?)0+");
+
     public String[] getValidFileExtensions() {
         return new String[] {"txt"};
     }
@@ -87,8 +89,7 @@ public class StringChangeLogSerializer implements ChangeLogSerializer {
                             }
                             else if (value instanceof Number) {
                                 String valueStr = value.toString();
-                                final Pattern valueStrPattern = Pattern.compile("(\\d*\\.\\d*?)0+");
-                                final Matcher valueStrMatcher = valueStrPattern.matcher(valueStr);
+                                final Matcher valueStrMatcher = NUMERIC_VALUE_PATTERN.matcher(valueStr);
                                 if (valueStrMatcher.matches()) {
                                     valueStr = valueStrMatcher.group(1);
                                 }
