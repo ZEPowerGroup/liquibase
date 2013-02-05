@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.OutputStream;
 import java.io.IOException;
 
@@ -82,6 +84,15 @@ public class StringChangeLogSerializer implements ChangeLogSerializer {
                                 values.add(indent(indent) + propertyName + "=" + serializeObject((Collection) value, indent + 1));
                             } else if (value instanceof Object[]) {
                                 values.add(indent(indent) + propertyName + "=" + serializeObject((Object[]) value, indent + 1));
+                            }
+                            else if (value instanceof Number) {
+                                String valueStr = value.toString();
+                                final Pattern valueStrPattern = Pattern.compile("(\\d*\\.\\d*?)0+");
+                                final Matcher valueStrMatcher = valueStrPattern.matcher(valueStr);
+                                if (valueStrMatcher.matches()) {
+                                    valueStr = valueStrMatcher.group(1);
+                                }
+                                values.add(indent(indent) + propertyName + "=\"" + valueStr + "\"");
                             } else {
                                 values.add(indent(indent) + propertyName + "=\"" + value.toString() + "\"");
                             }
