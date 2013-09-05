@@ -168,6 +168,7 @@
                         <optimize>true</optimize>
                         <debug>true</debug>
                         <encoding>${project.build.sourceEncoding}</encoding>
+                        <executable>${env.JAVA_6_HOME}/bin/javac</executable>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -176,6 +177,7 @@
                     <configuration>
                         <redirectTestOutputToFile>true</redirectTestOutputToFile>
                         <reportFormat>plain</reportFormat>
+                        <jvm>${env.JAVA_6_HOME}/bin/java</jvm>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -254,7 +256,7 @@
     <distributionManagement>
       <snapshotRepository>
         <id>ze.nexus.external.snapshot</id>
-        <url>http://zema-util-02/nexus/content/repositories/ze.nexus.external.snapshot</url>
+        <url>http://repo.zepower.com/content/repositories/ze.nexus.external.snapshot</url>
       </snapshotRepository>
     </distributionManagement>
 
