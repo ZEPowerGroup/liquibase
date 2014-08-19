@@ -101,6 +101,11 @@ public class ServiceLocator {
         }
     }
 
+  public void setClassResolver(final PackageScanClassResolver classResolver) {
+    classResolver.setClassLoaders(new HashSet<ClassLoader>(Arrays.asList(resourceAccessor.toClassLoader())));
+    this.classResolver = classResolver;
+  }
+
     public void addPackageToScan(String packageName) {
         packagesToScan.add(packageName);
     }
