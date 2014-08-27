@@ -5,11 +5,13 @@ import java.util.Map;
 
 import liquibase.database.Database;
 import liquibase.exception.DatabaseException;
+import liquibase.servicelocator.LiquibaseService;
 import liquibase.sql.visitor.SqlVisitor;
 import liquibase.statement.CallableSqlStatement;
 import liquibase.statement.SqlStatement;
 
 @SuppressWarnings("rawtypes")
+@LiquibaseService(skip = true)
 public class ComboExecutor implements Executor {
 
     private final Executor mainExecutor;
