@@ -6,12 +6,12 @@
     <artifactId>liquibase-core</artifactId>
     <name>Liquibase Core</name>
     <packaging>jar</packaging>
-    <version>2.0.4.ZE-SNAPSHOT</version>
+    <version>2.0.4.ZE.0</version>
 
     <parent>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-parent</artifactId>
-      <version>2.0.4.ZE-SNAPSHOT</version>
+      <version>2.0.4.ZE.0</version>
       <relativePath>../pom.xml</relativePath>
     </parent>
     
