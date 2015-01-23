@@ -1009,12 +1009,18 @@ public abstract class AbstractDatabase implements Database {
 
     public void close() throws DatabaseException {
         try {
-            DatabaseConnection connection = getConnection();
-            if (connection != null) {
-                connection.close();
+            ExecutorService.getInstance().clearExecutor(this);
+        }
+        finally {
+            try {
+                DatabaseConnection connection = getConnection();
+                if (connection != null) {
+                    connection.close();
+                }
             }
-        } catch (DatabaseException e) {
-            throw new DatabaseException(e);
+            catch (DatabaseException e) {
+                throw new DatabaseException(e);
+            }
         }
     }
 
