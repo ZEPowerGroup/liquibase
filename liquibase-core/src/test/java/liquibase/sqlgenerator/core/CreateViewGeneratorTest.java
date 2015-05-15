@@ -1,49 +1,76 @@
 package liquibase.sqlgenerator.core;
 
-public abstract class CreateViewGeneratorTest {
-//    @Test
-//    public void execute_defaultSchema() throws Exception {
-//        final String definition = "SELECT * FROM " + TABLE_NAME;
-//
-//        new DatabaseTestTemplate().testOnAvailableDatabases(
-//                new SqlStatementDatabaseTest(null, new CreateViewStatement(null, VIEW_NAME, definition, false)) {
-//                    protected void preExecuteAssert(DatabaseSnapshotGenerator snapshot) {
-//                        assertNull(snapshot.getView(VIEW_NAME));
-//                    }
-//
-//                    protected void postExecuteAssert(DatabaseSnapshotGenerator snapshot) {
-//                        View view = snapshot.getView(VIEW_NAME);
-//                        assertNotNull(view);
-//                        assertEquals(2, view.getColumns().size());
-//                    }
-//
-//                });
-//    }
-//
-//    @Test
-//    public void execute_altSchema() throws Exception {
-//        final String definition = "SELECT * FROM " + TestContext.ALT_SCHEMA+"."+TABLE_NAME;
-//        new DatabaseTestTemplate().testOnAvailableDatabases(
-//                new SqlStatementDatabaseTest(TestContext.ALT_SCHEMA, new CreateViewStatement(TestContext.ALT_SCHEMA, VIEW_NAME, definition, false)) {
-//                    protected boolean supportsTest(Database database) {
-//                        return !(database instanceof HsqlDatabase  || database  instanceof H2Database || database instanceof OracleDatabase); //don't know why oracle isn't working
-//                    }
-//
-//                    protected boolean expectedException(Database database, DatabaseException exception) {
-//                        return !database.supportsSchemas();
-//                    }
-//
-//                    protected void preExecuteAssert(DatabaseSnapshotGenerator snapshot) {
-//                        assertNull(snapshot.getView(VIEW_NAME));
-//                    }
-//
-//                    protected void postExecuteAssert(DatabaseSnapshotGenerator snapshot) {
-//                        View view = snapshot.getView(VIEW_NAME);
-//                        assertNotNull(view);
-//                        assertEquals(2, view.getColumns().size());
-//                    }
-//
-//                });
-//    }
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import org.junit.Assert;
+import org.junit.Test;
+
+import liquibase.database.Database;
+import liquibase.database.core.OracleDatabase;
+import liquibase.sql.Sql;
+import liquibase.sqlgenerator.SqlGenerator;
+import liquibase.sqlgenerator.SqlGeneratorChain;
+import liquibase.statement.core.CreateViewStatement;
+
+public class CreateViewGeneratorTest {
+  @Test
+  public void noForceCreateView() {
+    final String definition = "SELECT * FROM SOME_TABLE";
+    final CreateViewStatement statement = new CreateViewStatement("VIEW_SCHEMA", "VIEW_NAME", definition, false, false);
+    final CreateViewGenerator generator = new CreateViewGenerator();
+    final SortedSet<SqlGenerator> generators = new TreeSet<SqlGenerator>();
+    generators.add(generator);
+    final Database database = new OracleDatabase();
+    final SqlGeneratorChain chain = new SqlGeneratorChain(generators);
+    final Sql[] sqls = generator.generateSql(statement, database, chain);
+    Assert.assertEquals(1, sqls.length);
+    Assert.assertEquals("CREATE VIEW VIEW_SCHEMA.VIEW_NAME AS SELECT * FROM SOME_TABLE",
+        sqls[0].toSql());
+  }
+
+  @Test
+  public void noForceRereateView() {
+    final String definition = "SELECT * FROM SOME_TABLE";
+    final CreateViewStatement statement = new CreateViewStatement("VIEW_SCHEMA", "VIEW_NAME", definition, true, false);
+    final CreateViewGenerator generator = new CreateViewGenerator();
+    final SortedSet<SqlGenerator> generators = new TreeSet<SqlGenerator>();
+    generators.add(generator);
+    final Database database = new OracleDatabase();
+    final SqlGeneratorChain chain = new SqlGeneratorChain(generators);
+    final Sql[] sqls = generator.generateSql(statement, database, chain);
+    Assert.assertEquals(1, sqls.length);
+    Assert.assertEquals("CREATE OR REPLACE VIEW VIEW_SCHEMA.VIEW_NAME AS SELECT * FROM SOME_TABLE",
+        sqls[0].toSql());
+  }
+
+  @Test
+  public void forceCreateView() {
+    final String definition = "SELECT * FROM SOME_TABLE";
+    final CreateViewStatement statement = new CreateViewStatement("VIEW_SCHEMA", "VIEW_NAME", definition, false, true);
+    final CreateViewGenerator generator = new CreateViewGenerator();
+    final SortedSet<SqlGenerator> generators = new TreeSet<SqlGenerator>();
+    generators.add(generator);
+    final Database database = new OracleDatabase();
+    final SqlGeneratorChain chain = new SqlGeneratorChain(generators);
+    final Sql[] sqls = generator.generateSql(statement, database, chain);
+    Assert.assertEquals(1, sqls.length);
+    Assert.assertEquals("CREATE VIEW FORCE VIEW_SCHEMA.VIEW_NAME AS SELECT * FROM SOME_TABLE",
+        sqls[0].toSql());
+  }
+
+  @Test
+  public void forceRereateView() {
+    final String definition = "SELECT * FROM SOME_TABLE";
+    final CreateViewStatement statement = new CreateViewStatement("VIEW_SCHEMA", "VIEW_NAME", definition, true, true);
+    final CreateViewGenerator generator = new CreateViewGenerator();
+    final SortedSet<SqlGenerator> generators = new TreeSet<SqlGenerator>();
+    generators.add(generator);
+    final Database database = new OracleDatabase();
+    final SqlGeneratorChain chain = new SqlGeneratorChain(generators);
+    final Sql[] sqls = generator.generateSql(statement, database, chain);
+    Assert.assertEquals(1, sqls.length);
+    Assert.assertEquals("CREATE OR REPLACE VIEW FORCE VIEW_SCHEMA.VIEW_NAME AS SELECT * FROM SOME_TABLE",
+        sqls[0].toSql());
+  }
 }

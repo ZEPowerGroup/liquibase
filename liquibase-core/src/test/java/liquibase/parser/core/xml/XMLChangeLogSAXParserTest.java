@@ -3,6 +3,7 @@ package liquibase.parser.core.xml;
 import liquibase.change.Change;
 import liquibase.change.core.AddColumnChange;
 import liquibase.change.core.CreateTableChange;
+import liquibase.change.core.CreateViewChange;
 import liquibase.change.core.RawSQLChange;
 import liquibase.change.custom.CustomChangeWrapper;
 import liquibase.change.custom.ExampleCustomSqlChange;
@@ -142,8 +143,10 @@ public class XMLChangeLogSAXParserTest {
         assertEquals("runningAs", changeLog.getPreconditions().getNestedPreconditions().get(0).getName());
 
         assertEquals("or", changeLog.getPreconditions().getNestedPreconditions().get(1).getName());
-        assertEquals("dbms", ((OrPrecondition) changeLog.getPreconditions().getNestedPreconditions().get(1)).getNestedPreconditions().get(0).getName());
-        assertEquals("dbms", ((OrPrecondition) changeLog.getPreconditions().getNestedPreconditions().get(1)).getNestedPreconditions().get(1).getName());
+        assertEquals("dbms", ((OrPrecondition) changeLog.getPreconditions().getNestedPreconditions().get(1)).getNestedPreconditions().get(
+            0).getName());
+        assertEquals("dbms", ((OrPrecondition) changeLog.getPreconditions().getNestedPreconditions().get(1)).getNestedPreconditions().get(
+            1).getName());
 
         assertEquals(1, changeLog.getChangeSets().size());
     }
@@ -359,5 +362,53 @@ public class XMLChangeLogSAXParserTest {
 		assertTrue(changeSet.getRollBackChanges()[0] instanceof RawSQLChange);
 		assertEquals("drop table rawsql", ((RawSQLChange) changeSet.getRollBackChanges()[0]).getSql());
 	}
+
+    @Test
+    public void createViewNoForce() throws Exception {
+        ChangeLogParameters params = new ChangeLogParameters();
+        DatabaseChangeLog changeLog = new XMLChangeLogSAXParser().parse("liquibase/parser/core/xml/createViewChangeLog.xml", params, new JUnitResourceAccessor());
+
+        assertEquals("liquibase/parser/core/xml/createViewChangeLog.xml", changeLog.getLogicalFilePath());
+        assertEquals("liquibase/parser/core/xml/createViewChangeLog.xml", changeLog.getPhysicalFilePath());
+
+        assertEquals(1, changeLog.getChangeSets().size());
+
+        // change 0
+        ChangeSet changeSet = changeLog.getChangeSets().get(0);
+        assertEquals("wfhartford", changeSet.getAuthor());
+        assertEquals("1", changeSet.getId());
+        assertEquals("liquibase/parser/core/xml/createViewChangeLog.xml", changeSet.getFilePath());
+        assertEquals(1, changeSet.getChanges().size());
+        assertTrue(changeSet.getChanges().get(0) instanceof CreateViewChange);
+        assertEquals("view_schema", ((CreateViewChange) changeSet.getChanges().get(0)).getSchemaName());
+        assertEquals("view", ((CreateViewChange) changeSet.getChanges().get(0)).getViewName());
+        assertEquals("select * from data.table", ((CreateViewChange) changeSet.getChanges().get(0)).getSelectQuery());
+        assertEquals(null, ((CreateViewChange) changeSet.getChanges().get(0)).getReplaceIfExists());
+        assertEquals(false, ((CreateViewChange) changeSet.getChanges().get(0)).getForceCreate());
+    }
+    @Test
+    public void createViewForce() throws Exception {
+        ChangeLogParameters params = new ChangeLogParameters();
+        params.set("liquibase.forceViewCreation", "true");
+        DatabaseChangeLog changeLog = new XMLChangeLogSAXParser().parse("liquibase/parser/core/xml/createViewChangeLog.xml", params, new JUnitResourceAccessor());
+
+        assertEquals("liquibase/parser/core/xml/createViewChangeLog.xml", changeLog.getLogicalFilePath());
+        assertEquals("liquibase/parser/core/xml/createViewChangeLog.xml", changeLog.getPhysicalFilePath());
+
+        assertEquals(1, changeLog.getChangeSets().size());
+
+        // change 0
+        ChangeSet changeSet = changeLog.getChangeSets().get(0);
+        assertEquals("wfhartford", changeSet.getAuthor());
+        assertEquals("1", changeSet.getId());
+        assertEquals("liquibase/parser/core/xml/createViewChangeLog.xml", changeSet.getFilePath());
+        assertEquals(1, changeSet.getChanges().size());
+        assertTrue(changeSet.getChanges().get(0) instanceof CreateViewChange);
+        assertEquals("view_schema", ((CreateViewChange) changeSet.getChanges().get(0)).getSchemaName());
+        assertEquals("view", ((CreateViewChange) changeSet.getChanges().get(0)).getViewName());
+        assertEquals("select * from data.table", ((CreateViewChange) changeSet.getChanges().get(0)).getSelectQuery());
+        assertEquals(null, ((CreateViewChange) changeSet.getChanges().get(0)).getReplaceIfExists());
+        assertEquals(true, ((CreateViewChange) changeSet.getChanges().get(0)).getForceCreate());
+    }
 
 }
