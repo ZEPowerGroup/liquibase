@@ -41,6 +41,9 @@ public class CreateViewGenerator extends AbstractSqlGenerator<CreateViewStatemen
         } else {
             createClause = "CREATE " + (statement.isReplaceIfExists() ? "OR REPLACE " : "") + "VIEW";
         }
+        if (database instanceof OracleDatabase && statement.isForceCreate()) {
+            createClause = createClause + " FORCE";
+        }
 
         return new Sql[]{
                 new UnparsedSql(createClause + " " + database.escapeViewName(statement.getSchemaName(), statement.getViewName()) + " AS " + statement.getSelectQuery())

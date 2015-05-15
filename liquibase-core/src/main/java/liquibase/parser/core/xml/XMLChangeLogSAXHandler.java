@@ -622,6 +622,10 @@ class XMLChangeLogSAXHandler extends DefaultHandler {
 						// change).setSelectQuery(textString);
 					} else if (change instanceof CreateViewChange) {
 						((CreateViewChange) change).setSelectQuery(textString);
+						((CreateViewChange) change).setForceCreate(
+								changeLogParameters.hasValue("liquibase.forceViewCreation") &&
+										Boolean.parseBoolean(changeLogParameters.getValue("liquibase.forceViewCreation").toString())
+						);
 					} else if (change instanceof StopChange) {
 						((StopChange) change).setMessage(textString);
 					} else {

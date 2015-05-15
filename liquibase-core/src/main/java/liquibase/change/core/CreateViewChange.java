@@ -23,6 +23,7 @@ public class CreateViewChange extends AbstractChange {
 	private String viewName;
 	private String selectQuery;
 	private Boolean replaceIfExists;
+	private Boolean forceCreate;
 
 	public CreateViewChange() {
 		super("createView", "Create View", ChangeMetaData.PRIORITY_DEFAULT);
@@ -60,12 +61,24 @@ public class CreateViewChange extends AbstractChange {
 		this.replaceIfExists = replaceIfExists;
 	}
 
+	public Boolean getForceCreate() {
+		return forceCreate;
+	}
+
+	public void setForceCreate(final Boolean forceCreate) {
+		this.forceCreate = forceCreate;
+	}
+
 	public SqlStatement[] generateStatements(Database database) {
 		List<SqlStatement> statements = new ArrayList<SqlStatement>();
 
 		boolean replaceIfExists = false;
 		if (getReplaceIfExists() != null && getReplaceIfExists()) {
 			replaceIfExists = true;
+		}
+		boolean forceCreate = false;
+		if (getForceCreate() != null && getForceCreate()) {
+			forceCreate = true;
 		}
 
 		if (!supportsReplaceIfExistsOption(database) && replaceIfExists) {
@@ -75,12 +88,12 @@ public class CreateViewChange extends AbstractChange {
 			statements.add(new CreateViewStatement(
 					getSchemaName() == null ? database.getDefaultSchemaName()
 							: getSchemaName(), getViewName(), getSelectQuery(),
-					false));
+					false, forceCreate));
 		} else {
 			statements.add(new CreateViewStatement(
 					getSchemaName() == null ? database.getDefaultSchemaName()
 							: getSchemaName(), getViewName(), getSelectQuery(),
-					replaceIfExists));
+					replaceIfExists, forceCreate));
 		}
 
 		return statements.toArray(new SqlStatement[statements.size()]);
