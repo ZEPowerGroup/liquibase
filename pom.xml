@@ -254,10 +254,10 @@
     </reporting>
 
     <distributionManagement>
-      <snapshotRepository>
-        <id>ze.nexus.external.snapshot</id>
-        <url>http://repo.zepower.com/content/repositories/ze.nexus.external.snapshot</url>
-      </snapshotRepository>
+      <repository>
+        <id>ze.nexus.release</id>
+        <url>http://repo.zepower.com/content/repositories/ze.nexus.release</url>
+      </repository>
     </distributionManagement>
 
     <profiles>
