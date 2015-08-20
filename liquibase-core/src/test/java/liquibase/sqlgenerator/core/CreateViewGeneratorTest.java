@@ -55,7 +55,7 @@ public class CreateViewGeneratorTest {
     final SqlGeneratorChain chain = new SqlGeneratorChain(generators);
     final Sql[] sqls = generator.generateSql(statement, database, chain);
     Assert.assertEquals(1, sqls.length);
-    Assert.assertEquals("CREATE VIEW FORCE VIEW_SCHEMA.VIEW_NAME AS SELECT * FROM SOME_TABLE",
+    Assert.assertEquals("CREATE FORCE VIEW VIEW_SCHEMA.VIEW_NAME AS SELECT * FROM SOME_TABLE",
         sqls[0].toSql());
   }
 
@@ -70,7 +70,7 @@ public class CreateViewGeneratorTest {
     final SqlGeneratorChain chain = new SqlGeneratorChain(generators);
     final Sql[] sqls = generator.generateSql(statement, database, chain);
     Assert.assertEquals(1, sqls.length);
-    Assert.assertEquals("CREATE OR REPLACE VIEW FORCE VIEW_SCHEMA.VIEW_NAME AS SELECT * FROM SOME_TABLE",
+    Assert.assertEquals("CREATE OR REPLACE FORCE VIEW VIEW_SCHEMA.VIEW_NAME AS SELECT * FROM SOME_TABLE",
         sqls[0].toSql());
   }
 }
