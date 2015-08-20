@@ -1,11 +1,19 @@
 package liquibase.sqlgenerator.core;
 
 import liquibase.database.Database;
-import liquibase.database.core.*;
+import liquibase.database.core.CacheDatabase;
+import liquibase.database.core.DB2Database;
+import liquibase.database.core.DerbyDatabase;
+import liquibase.database.core.FirebirdDatabase;
+import liquibase.database.core.H2Database;
+import liquibase.database.core.HsqlDatabase;
+import liquibase.database.core.InformixDatabase;
+import liquibase.database.core.MSSQLDatabase;
+import liquibase.database.core.OracleDatabase;
+import liquibase.database.core.SybaseASADatabase;
 import liquibase.exception.ValidationErrors;
 import liquibase.sql.Sql;
 import liquibase.sql.UnparsedSql;
-import liquibase.sqlgenerator.SqlGenerator;
 import liquibase.sqlgenerator.SqlGeneratorChain;
 import liquibase.statement.core.CreateViewStatement;
 
@@ -39,10 +47,11 @@ public class CreateViewGenerator extends AbstractSqlGenerator<CreateViewStatemen
                     new UnparsedSql(statement.getSelectQuery())
             };
         } else {
-            createClause = "CREATE " + (statement.isReplaceIfExists() ? "OR REPLACE " : "") + "VIEW";
-        }
-        if (database instanceof OracleDatabase && statement.isForceCreate()) {
-            createClause = createClause + " FORCE";
+            createClause = "CREATE " + (statement.isReplaceIfExists() ? "OR REPLACE " : "");
+            if (database instanceof OracleDatabase && statement.isForceCreate()) {
+                createClause = createClause + "FORCE ";
+            }
+            createClause = createClause + "VIEW";
         }
 
         return new Sql[]{
