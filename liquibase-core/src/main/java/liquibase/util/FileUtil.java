@@ -8,13 +8,14 @@ public class FileUtil {
    * Schedule a file to be deleted when JVM exits.
    * If file is directory delete it and all sub-directories.
    */
-  public static void forceDeleteOnExit( final File file ) {
+  public static void forceDeleteOnExit(final File file) {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
         try {
           FileUtil.deleteDirectory(file);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
           e.printStackTrace();
         }
       }
@@ -24,14 +25,14 @@ public class FileUtil {
   /**
    * Recursively schedule directory for deletion on JVM exit.
    */
-  private static void deleteDirectory( final File directory ) throws IOException {
-    if ( !directory.exists() ) {
+  private static void deleteDirectory(final File directory) throws IOException {
+    if (!directory.exists()) {
       return;
     }
 
     cleanDirectory(directory);
     if (!directory.delete()) {
-      throw new IOException("Cannot delete "+directory.getAbsolutePath());
+      throw new IOException("Cannot delete " + directory.getAbsolutePath());
     }
   }
 
@@ -39,11 +40,11 @@ public class FileUtil {
    * Clean a directory without deleting it.
    */
   private static void cleanDirectory(final File directory) throws IOException {
-    if ( !directory.exists() ) {
+    if (!directory.exists()) {
       return;
     }
 
-    if ( !directory.isDirectory() ) {
+    if (!directory.isDirectory()) {
       return;
     }
 
@@ -55,15 +56,16 @@ public class FileUtil {
         try {
           cleanDirectory(file);
           if (!file.delete()) {
-            throw new IOException("Cannot delete "+file.getAbsolutePath());
+            throw new IOException("Cannot delete " + file.getAbsolutePath());
           }
-        } catch (final IOException ioe) {
+        }
+        catch (final IOException ioe) {
           exception = ioe;
         }
       }
     }
 
-    if ( null != exception ) {
+    if (null != exception) {
       throw exception;
     }
   }
