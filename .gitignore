@@ -2,3 +2,6 @@ target
 .idea
 *.iml
 atlassian-ide-plugin.xml
+liquibase.iml
+liquibase.ipr
+liquibase.iws

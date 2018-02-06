@@ -255,9 +255,13 @@
 
     <distributionManagement>
       <snapshotRepository>
-        <id>ze.nexus.external.snapshot</id>
-        <url>http://repo.zepower.com/content/repositories/ze.nexus.external.snapshot</url>
+        <id>libs-snapshot-local</id>
+        <url>http://repo.zepower.com/libs-snapshot-local</url>
       </snapshotRepository>
+      <repository>
+        <id>libs-release-local</id>
+        <url>http://repo.zepower.com/libs-release-local</url>
+      </repository>
     </distributionManagement>
 
     <profiles>
