@@ -25,7 +25,8 @@ public class LockService {
 
     private boolean hasChangeLogLock = false;
 
-    private long changeLogLockWaitTime = 1000 * 60 * 5;  //default to 5 mins
+    private static final long DEFAULT_LOCK_WAIT_TIME = 1000 * 60 * 5;  //default to 5 mins
+    private long changeLogLockWaitTime = Long.getLong("liquibase.lockservice.defaultWaitTime", DEFAULT_LOCK_WAIT_TIME);
     private long changeLogLocRecheckTime = 1000 * 10;  //default to every 10 seconds
 
     private static Map<Database, LockService> instances = new ConcurrentHashMap<Database, LockService>();
