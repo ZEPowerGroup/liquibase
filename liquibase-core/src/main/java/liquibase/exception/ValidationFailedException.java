@@ -44,9 +44,6 @@ public class ValidationFailedException extends MigrationFailedException {
         if (invalidMD5Sums.size() > 0) {
             message.append("     ").append(invalidMD5Sums.size()).append(" change sets check sum").append(StreamUtil.getLineSeparator());
             for (int i=0; i< invalidMD5Sums.size(); i++) {
-                if (i > 25) {
-                    break;
-                }
                 ChangeSet invalid = invalidMD5Sums.get(i);
 
                 message.append("          ").append(invalid.toString(false)).append(" is now: ").append(invalid.generateCheckSum());
