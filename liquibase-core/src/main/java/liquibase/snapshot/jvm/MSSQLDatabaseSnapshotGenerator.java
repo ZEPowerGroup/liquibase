@@ -4,6 +4,7 @@ import liquibase.database.Database;
 import liquibase.database.core.MSSQLDatabase;
 import liquibase.database.structure.ForeignKeyConstraintType;
 import liquibase.exception.DatabaseException;
+import java.sql.*;
 
 public class MSSQLDatabaseSnapshotGenerator extends JdbcDatabaseSnapshotGenerator {
     public boolean supports(Database database) {
@@ -33,7 +34,23 @@ public class MSSQLDatabaseSnapshotGenerator extends JdbcDatabaseSnapshotGenerato
      */
     @Override
     protected ForeignKeyConstraintType convertToForeignKeyConstraintType(int jdbcType) throws DatabaseException {
-    	
+        // for new sql server driver 6.3 or above
+        if (jdbcType == DatabaseMetaData.importedKeyCascade) {
+            return ForeignKeyConstraintType.importedKeyCascade;
+        } else if (jdbcType == DatabaseMetaData.importedKeyNoAction) {
+            return ForeignKeyConstraintType.importedKeyNoAction;
+        } else if (jdbcType == DatabaseMetaData.importedKeyRestrict) {
+            return ForeignKeyConstraintType.importedKeyNoAction;
+        } else if (jdbcType == DatabaseMetaData.importedKeySetDefault) {
+            return ForeignKeyConstraintType.importedKeySetDefault;
+        } else if (jdbcType == DatabaseMetaData.importedKeySetNull) {
+            return ForeignKeyConstraintType.importedKeySetNull;
+        } else {
+            throw new DatabaseException("Unknown constraint type: " + jdbcType);
+        }
+
+/**
+        // for older sql server driver
         if (jdbcType == 0) {
             return ForeignKeyConstraintType.importedKeyCascade;
         } else if (jdbcType == 1) {
@@ -43,6 +60,6 @@ public class MSSQLDatabaseSnapshotGenerator extends JdbcDatabaseSnapshotGenerato
         } else {
             throw new DatabaseException("Unknown constraint type: " + jdbcType);
         }
+*/
     }
-
 }
